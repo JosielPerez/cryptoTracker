@@ -6,3 +6,12 @@
 //
 
 import Foundation
+
+class CurrencySymbol {
+    static let symbols: [String: String] = [
+        "USD": "$",
+        "EUR": "€",
+        "GBP": "£",
+        "JPY": "¥",
+    ]
+}

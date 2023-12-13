@@ -7,23 +7,41 @@
 
 import UIKit
 
-class SelectCurrencyViewController: UIViewController {
-
+class SelectCurrencyViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
+    var currencies = ["USD", "EUR", "GBP", "JPY"]
+    var selectedCurrency: String?
+    
+    lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "currencyCell")
+        return tableView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        selectedCurrency = UserDefaults.standard.string(forKey: UserDefaultsKeys.preferredCurrency)
+        view.addSubview(tableView)
+        tableView.frame = view.bounds
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return currencies.count
     }
-    */
-
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "currencyCell", for: indexPath)
+        let currency = currencies[indexPath.row]
+        cell.textLabel?.text = currency
+        cell.accessoryType = currency == selectedCurrency ? .checkmark : .none
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectedCurrency = currencies[indexPath.row]
+        UserDefaults.standard.set(selectedCurrency, forKey: "SelectedCurrency")
+        tableView.reloadData()
+    }
 }
